@@ -1,4 +1,5 @@
 class Student(object):
+    count = 0
     def __init__(self,name,score):
         self.name = name
         self.__score = score
@@ -11,5 +12,4 @@ if __name__=='__main__':
     # print(stu.__score)
     stu.print_score()
     print(stu.__dir__())
-
-    print(dir('abc'))
+    print(stu.age)
