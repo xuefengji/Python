@@ -8,6 +8,8 @@ class Student(object):
 
 if __name__=='__main__':
     stu = Student('lisa',89)
-    print(stu.__score)
+    # print(stu.__score)
     stu.print_score()
     print(stu.__dir__())
+
+    print(dir('abc'))
