@@ -177,3 +177,25 @@ set和dict类似，但是不存储value
 >>> a
 'abc'
 ```
+
+
+
+10、type与instance的区别
+
+```
+class A:
+    pass
+
+class B(A):
+    pass
+
+print(type(B()) == B)     //Ture
+print(isinstance(B(),B))  //Ture
+print(type(B()) == A)     //False
+print(isinstance(B(),A))  //Ture
+
+总结：
+type不会将继承的子对象认为是父对象类型，但instance会
+
+```
+
