@@ -26,3 +26,42 @@ IPython 是基于 CPython 之上的一个交互式解释器，也就是说 IPyth
 + print()
 
 + input()
+
+3、pip 使用
+
++ 普通安装
+
+  pip install pillow
+
++ 指定版本安装
+
+  通过使用 ==, >=, <=, >, <来指定一个版本号。 `pip install 'Markdown<2.0'` `pip install 'Markdown>2.0,<2.0.3` 
+
++ 卸载已安装的库
+
+  pip uninstall pillow
+
++ 列出已经安装的库
+
+  pip list
+
++ 将已安装的库列表保存到文本文件中
+
+  pip freeze > requirements.txt 
+
+  会将相关的依赖包都写入文档中
+
++ 根据依赖文件批量安装库
+
+  pip install -r requestments.txt
+
++ 使用 wheel 文件安装
+
+  下载 whl 的格式文件到本地，通过 pip install xxxx.whl 文件即可离线安装
+
++ pip 源的选择
+
+  提高下载速度，可以更换 pip 的安装源：
+
+   pip install -i https://pypi.doubanio.com/simple/ --trusted-host pypi.doubanio.com pillow 
+
