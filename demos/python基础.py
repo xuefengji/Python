@@ -1,3 +1,3 @@
-a = 1
-b = "hello world"
-print(c)
+a = 60
+print(bin(a))
+print(True == 1)
