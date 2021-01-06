@@ -12,6 +12,51 @@
 
 
 
+
+
+## 变量与常量
+
+变量：运行过程中值会变
+
+常量：运行过程中值不会变
+
++ 声明变量时，不需要指定
+
+  使用 = 来为变量进行赋值
+
+  ```
+  a = 1
+  b = "hello world"
+  ```
+
+  不管是变量还是常量，都是在赋值后创建内存区域
+
++ 变量在使用前都必须赋值，否则会报错
+
+  ```
+  a = 1
+  b = "hello world"
+  print(c)
+  
+  运行时：
+  Traceback (most recent call last):
+    File ".\python基础.py", line 3, in <module>
+      print(c)
+  NameError: name 'c' is not defined
+  ```
+
++ 变量本身没有数据类型，有数据类型得是值得类型
+
++ 多个变量可同时赋值
+
+  ```
+  a=b=c=1
+  
+  a,b,c=1,2,3
+  ```
+
+  
+
 ## 基础语法
 
 1、数据类型与变量
