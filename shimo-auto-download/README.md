@@ -18,16 +18,16 @@
 
 + 项目结构
 
+  ```
   shimo-auto-download
   │  .gitignore
   │  config.py
   │  README.md
   │  requirements.txt
-  │  run.py
+│  run.py
+  ```
 
-  
-
-  config.py : 项目的配置文件
+  config.py : 项目的配置文件,使用前需要在此进行配置
 
   run.py：进行文件下载的文件
 
