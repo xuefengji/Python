@@ -17,23 +17,23 @@
 # print("函数outer执行完毕，全局变量a的内存地址： ", id(a))
 
 
-# a = 10
+a = 10
 # print(id(a))
-# def test():
-#     # global a
-#     a += 1
-#     print(id(a))
-# test()
+def test():
+    # global a
+    a += 1
+    print(id(a))
+test()
 
-name ='jack'
+# name ='jack'
 
-def f1():
-    print(name)
-
-def f2():
-    name = 'eric'
-    # def f1():
-     #     print(name)
-    f1()
-
-f2()
+# def f1():
+#     print(name)
+#
+# def f2():
+#     name = 'eric'
+#     # def f1():
+#      #     print(name)
+#     f1()
+#
+# f2()
