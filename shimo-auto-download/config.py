@@ -42,6 +42,10 @@ class Config():
         "mindmap": {
             "export_types": ["xmind","jpg"],
             "select_export_type": "xmind"
+        },
+        "sheet": {
+            "export_types": ["xlsx"],
+            "select_export_type": "xlsx"
         }
     }
 
