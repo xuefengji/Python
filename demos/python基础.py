@@ -39,14 +39,32 @@
 # f2()
 
 
-import os
+# import os
+#
+# base = "E:\myself"
+#
+# file_path = os.path.join(base, "test.txt")
+#
+# print(file_path)
+#
+# print(file_path.split(base)[1][1:])
+#
+# os.remove(file_path)
 
-base = "E:\myself"
+class A:
+    def __init__(self, name):
+        self.name = name
+        print("父类的__init__方法被执行了！")
+    def show(self):
+        print("父类的show方法被执行了！")
 
-file_path = os.path.join(base, "test.txt")
+class B(A):
+    def __init__(self, name, age):
+        super(B, self).__init__(name=name)
+        self.age = age
 
-print(file_path)
+    def show(self):
+        super(B, self).show()
 
-print(file_path.split(base)[1][1:])
-
-os.remove(file_path)
+obj = B("jack", 18)
+obj.show()
