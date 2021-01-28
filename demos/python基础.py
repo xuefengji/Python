@@ -17,13 +17,13 @@
 # print("函数outer执行完毕，全局变量a的内存地址： ", id(a))
 
 
-a = 10
-# print(id(a))
-def test():
-    # global a
-    a += 1
-    print(id(a))
-test()
+# a = 10
+# # print(id(a))
+# def test():
+#     # global a
+#     a += 1
+#     print(id(a))
+# test()
 
 # name ='jack'
 
@@ -37,3 +37,16 @@ test()
 #     f1()
 #
 # f2()
+
+
+import os
+
+base = "E:\myself"
+
+file_path = os.path.join(base, "test.txt")
+
+print(file_path)
+
+print(file_path.split(base)[1][1:])
+
+os.remove(file_path)
