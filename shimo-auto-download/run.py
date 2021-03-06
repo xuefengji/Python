@@ -3,7 +3,7 @@
 """
 @Author: xuefengji
 @Create: 2021-01-19
-@Update: 2021-01-21
+@Update: 2021-01-29
 @Description: 文件下载
 """
 
@@ -24,6 +24,11 @@ class Run:
         self.guid = config.folder_url.split('/')[2]
         self.root_path = os.path.join(config.download_path, config.folder_name)
         self.export_file = config.export_file
+        self.total_files = 0
+        self.download_success = 0
+        self.download_fail = 0
+        self.download_fail_files = []
+        self.no_export = 0
 
     def get_all_files(self,headers,guid):
         """
@@ -37,9 +42,10 @@ class Run:
             data = requests.get(url=url, headers=headers, verify=False, stream=True)
             return data.json()
         except Exception as e:
-            print("获取文件失败")
+            print("获取文件失败:{}".format(e))
+            return ""
 
-    def wirte_file(self,path,file_name,export_type,file_data):
+    def write_file(self,file_path,file_data):
         """
         将文件写入本地
         :param path: 写入的路径
@@ -49,13 +55,22 @@ class Run:
         :return:
         """
         try:
-            with open(os.path.join(path, file_name + '.' + export_type), "wb") as f:
-                for chunk in file_data.iter_content(chunk_size=512):
+            with open(file_path, "wb") as f:
+                for chunk in file_data.iter_content(chunk_size=1024):
                     if chunk:
                         f.write(chunk)
+            print("下载完成！")
+            self.total_files += 1
+            self.download_success += 1
             return
         except Exception as e:
-            print("写入文件失败")
+            self.total_files += 1
+            self.download_fail += 1
+            self.download_fail_files.append(file_path.split(self.download_path)[1][1:])
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            print("写入文件失败:{}".format(e))
+
 
     def download_file(self,path,file_name,file_type,file_guid,folder_guid):
         """
@@ -76,6 +91,10 @@ class Run:
         if export_type not in self.export_file[file_type]["export_types"]:
             print("无此类型下载")
             return
+        file_path = os.path.join(path, file_name + '.' + export_type)
+        if os.path.exists(file_path):
+            print("此文件已存在，无需重复下载，文件：{}".format(file_path))
+            return
         try:
             # 导出的 url 和参数
             url = "https://xxport.shimo.im/files/{}/export".format(file_guid)
@@ -86,7 +105,8 @@ class Run:
                 "name": "file_name"
             }
             # 类型为Excel表格的下载
-            if file_type == "mosheet" :
+            if file_type == "mosheet" or file_type == "sheet" :
+                print(file_name)
                 params_data['isAsync'] = 1
                 # 为防止接口调用频繁限制速率
                 time.sleep(60)
@@ -104,7 +124,7 @@ class Run:
                 download_url = res_data.json()['data']['downloadUrl']
                 download_headers["referer"] = self.base_url + "/"
                 file_data = requests.get(url=download_url, headers=download_headers,  verify=False, stream=True)
-                self.wirte_file(path, file_name, export_type, file_data)
+                self.write_file(file_path, file_data)
                 return
             # 其他类型的文件下载
             print(file_name)
@@ -113,30 +133,39 @@ class Run:
             res = requests.get(url=url, params=params_data, headers=download_headers, verify=False, stream=True)
             print(res.json())
             file_data = requests.get(url=res.json()['redirectUrl'], headers=download_headers, verify=False, stream=True)
-            self.wirte_file(path, file_name, export_type, file_data)
+            self.write_file(file_path, file_data)
         except Exception as e:
-            print("文件下载失败")
+            print("文件下载失败:{}".format(e))
 
     def search(self,headers,guid,file_path):
         """
-        查找文件夹下是否有文件，有文件时,判断是文件时下载文件，没有时直接创建文件夹
+        递归查找文件夹下是否有文件，有文件时,判断是文件时下载文件，没有时直接创建文件夹
         :param headers: 请求头
         :param guid: 文件夹的 guid
         :param file_path: 文件夹路径
         :return:
         """
+
         all_files = self.get_all_files(headers,guid)
         if len(all_files) == 0:
             if not os.path.exists(file_path):
                 os.makedirs(file_path)
             return
+        export_key= self.export_file.keys()
         for file in all_files:
             if not file['isFolder']:
+                print(file['type'])
+                if file['type'] not in export_key:
+                    self.total_files += 1
+                    self.no_export += 1
+                    print("该类型无导出功能")
+                    continue
                 file_type = file['type']
                 path = file_path
-                file_name = file['name']
+                file_name = file['name'].replace("/", "-")
                 file_guid = file['guid']
                 folder_guid = guid
+                print("-----开始下载-----")
                 self.download_file(path, file_name, file_type, file_guid, folder_guid)
                 continue
             path = os.path.join(file_path,file['name'])
@@ -145,9 +174,14 @@ class Run:
             self.search(header,file['guid'],path)
 
 
-
-if __name__=="__main__":
-    run = Run()
-    print("-----开始下载-----")
-    run.search(run.headers,run.guid,run.root_path)
-    print("-----下载结束-----")
+if __name__ == "__main__":
+    try:
+        run = Run()
+        run.search(run.headers,run.guid,run.root_path)
+        print("本次需下载{}个文件，其中成功{}个，失败{}个，{}个无下载功能".format(run.total_files, run.download_success, run.download_fail, run.no_export))
+        if len(run.download_fail_files):
+            print("以下文件需要重新下载：")
+            for fail_file in run.download_fail_files:
+                print(fail_file)
+    except Exception as e:
+        print("程序异常：{}".format(e))
