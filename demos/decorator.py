@@ -1,12 +1,16 @@
 def log(fun):
     def wrapper(*args,**kw):
         print(fun.__name__)
-        fun()
-        print('test')
+        return fun(*args, **kw)
     return wrapper
 
-@log
+
 def now():
     print('2020-01-27')
 
-now()
+
+print(log(now))
+now = log(now)
+print(now)
+now1 = now()
+print(now1)
